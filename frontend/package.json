@@ -1,0 +1,36 @@
+{
+  "name": "avaliamais-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
+    "axios": "^1.6.7",
+    "zustand": "^4.5.2",
+    "react-hook-form": "^7.51.0",
+    "zod": "^3.22.4",
+    "@hookform/resolvers": "^3.3.4",
+    "sockjs-client": "^1.6.1",
+    "@stomp/stompjs": "^7.0.0",
+    "react-hot-toast": "^2.4.1",
+    "date-fns": "^3.6.0",
+    "lucide-react": "^0.363.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@types/sockjs-client": "^1.5.4",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
+  }
+}
