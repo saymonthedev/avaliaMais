@@ -6,6 +6,7 @@ import Usuarios from './pages/Usuarios';
 import Turmas from './pages/Turmas';
 import Eventos from './pages/Eventos';
 import Feedbacks from './pages/Feedbacks';
+import Formularios from './pages/Formularios';
 import Chat from './pages/Chat';
 import AppShell from './components/AppShell';
 import PrivateRoute from './components/PrivateRoute';
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="turmas" element={<Turmas />} />
           <Route path="eventos" element={<Eventos />} />
           <Route path="feedbacks" element={<Feedbacks />} />
+          <Route path="formularios" element={<Formularios />} />
           <Route path="chat" element={<Chat />} />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

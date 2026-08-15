@@ -58,8 +58,6 @@ export default function Chat() {
 
   const handleKey = (e: React.KeyboardEvent) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(); } };
 
-  const meuEmail = email;
-
   return (
     <div className="chat-layout">
       {/* Lista de contatos */}

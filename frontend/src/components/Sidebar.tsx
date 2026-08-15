@@ -13,6 +13,7 @@ const NAV: NavItem[] = [
   { to: '/dashboard', icon: '🏠', label: 'Dashboard' },
   { to: '/eventos', icon: '📅', label: 'Eventos', roles: ['PEDAGOGICO', 'SUPERVISAO', 'PROFESSOR', 'REPRESENTANTE', 'ALUNO', 'ADMINISTRADOR'] },
   { to: '/feedbacks', icon: '💬', label: 'Feedbacks' },
+  { to: '/formularios', icon: '📋', label: 'Formulários', roles: ['REPRESENTANTE', 'PROFESSOR', 'PEDAGOGICO'] },
   { to: '/chat', icon: '💭', label: 'Chat' },
   { to: '/turmas', icon: '🏫', label: 'Turmas', roles: ['PEDAGOGICO', 'ADMINISTRADOR', 'SUPERVISAO'] },
   { to: '/usuarios', icon: '👥', label: 'Usuários', roles: ['PEDAGOGICO', 'ADMINISTRADOR'] },

@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+MAVEN_HOME="$HOME/.m2/wrapper/dists/apache-maven-3.9.6-bin/apache-maven-3.9.6"
+if [ ! -f "$MAVEN_HOME/bin/mvn" ]; then
+  mkdir -p "$HOME/.m2/wrapper/dists/apache-maven-3.9.6-bin"
+  wget -q "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.6/apache-maven-3.9.6-bin.tar.gz" -O /tmp/maven.tar.gz
+  tar -xzf /tmp/maven.tar.gz -C "$HOME/.m2/wrapper/dists/apache-maven-3.9.6-bin/"
+  rm /tmp/maven.tar.gz
+fi
+exec "$MAVEN_HOME/bin/mvn" "$@"
