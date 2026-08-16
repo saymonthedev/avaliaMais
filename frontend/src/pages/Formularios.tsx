@@ -170,7 +170,6 @@ export default function Formularios() {
                     <textarea
                       className="form-control"
                       rows={3}
-                      placeholder={`Descreva ${campo.label.toLowerCase()}...`}
                       value={respostas[campo.key] ?? ''}
                       onChange={(e) => setRespostas({ ...respostas, [campo.key]: e.target.value })}
                     />

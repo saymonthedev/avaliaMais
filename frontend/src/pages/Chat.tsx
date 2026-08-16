@@ -121,7 +121,7 @@ export default function Chat() {
 
             <div className="chat-input-bar">
               <input
-                placeholder="Digite uma mensagem..."
+
                 value={texto}
                 onChange={(e) => setTexto(e.target.value)}
                 onKeyDown={handleKey}

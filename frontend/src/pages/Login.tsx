@@ -76,7 +76,6 @@ export default function Login() {
             <input
               className="form-control"
               type="email"
-              placeholder="seu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoFocus
@@ -87,7 +86,6 @@ export default function Login() {
             <input
               className="form-control"
               type="password"
-              placeholder="••••••••"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
             />

@@ -166,11 +166,11 @@ export default function Eventos() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Meta de preenchimento (%)</label>
-                  <input className="form-control" type="number" min="0" max="100" placeholder="Ex: 80" value={form.metaPreenchimento} onChange={(e) => setForm({ ...form, metaPreenchimento: e.target.value })} />
+                  <input className="form-control" type="number" min="0" max="100" value={form.metaPreenchimento} onChange={(e) => setForm({ ...form, metaPreenchimento: e.target.value })} />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Disciplinas (separadas por vírgula)</label>
-                  <input className="form-control" placeholder="Ex: Matemática, Português, História" value={form.disciplinas} onChange={(e) => setForm({ ...form, disciplinas: e.target.value })} />
+                  <input className="form-control" value={form.disciplinas} onChange={(e) => setForm({ ...form, disciplinas: e.target.value })} />
                 </div>
               </div>
               <div className="modal-footer">

@@ -75,12 +75,12 @@ export default function Turmas() {
               <div className="modal-body">
                 <div className="form-group">
                   <label className="form-label">Nome da turma</label>
-                  <input className="form-control" placeholder="Ex: 3º Ano A" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+                  <input className="form-control" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
                 </div>
                 <div className="grid-2">
                   <div className="form-group">
                     <label className="form-label">Curso</label>
-                    <input className="form-control" placeholder="Ex: Técnico em Informática" value={form.curso} onChange={(e) => setForm({ ...form, curso: e.target.value })} />
+                    <input className="form-control" value={form.curso} onChange={(e) => setForm({ ...form, curso: e.target.value })} />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Ano letivo</label>

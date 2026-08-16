@@ -4,8 +4,8 @@ import type { Toast } from 'react-hot-toast';
 type NotifyType = 'success' | 'error' | 'warning' | 'info';
 
 const typeConfig: Record<NotifyType, { color: string; icon: string }> = {
-  success: { color: '#22c55e', icon: '✓' },
-  error:   { color: '#ef4444', icon: '✕' },
+  success: { color: '#22c55e', icon: '\u2713' },
+  error:   { color: '#ef4444', icon: '\u2715' },
   warning: { color: '#f59e0b', icon: '!' },
   info:    { color: '#2563eb', icon: 'i' },
 };
@@ -19,61 +19,81 @@ function BrandedToast({ t, type, message }: { t: Toast; type: NotifyType; messag
         alignItems: 'center',
         gap: 12,
         background: '#ffffff',
-        borderRadius: 12,
-        padding: '12px 14px 12px 12px',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)',
-        border: '1px solid #e2e8f0',
+        borderRadius: 14,
+        padding: '14px 12px 14px 14px',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.18), 0 4px 20px rgba(0,0,0,0.10)',
+        border: '1px solid rgba(0,0,0,0.07)',
         borderLeft: `4px solid ${cfg.color}`,
-        minWidth: 260,
-        maxWidth: 380,
-        opacity: t.visible ? 1 : 0,
-        transform: t.visible ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.96)',
-        transition: 'opacity 0.25s ease, transform 0.25s ease',
+        minWidth: 290,
+        maxWidth: 420,
+        animation: `${t.visible ? 'toastIn' : 'toastOut'} 0.32s cubic-bezier(0.34,1.4,0.64,1) forwards`,
         fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
       }}
     >
       <div
         style={{
-          width: 32,
-          height: 32,
+          width: 36,
+          height: 36,
           background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-          borderRadius: 8,
+          borderRadius: 10,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           fontWeight: 900,
-          fontSize: 12,
+          fontSize: 13,
           color: 'white',
           letterSpacing: '-0.5px',
           flexShrink: 0,
-          boxShadow: '0 4px 10px rgba(37,99,235,.35)',
+          boxShadow: '0 4px 14px rgba(37,99,235,.45)',
         }}
       >
         A+
       </div>
 
       <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 13, color: '#0f172a', fontWeight: 500, lineHeight: 1.45 }}>
+        <div style={{ fontSize: 13.5, color: '#0f172a', fontWeight: 600, lineHeight: 1.4 }}>
           {message}
         </div>
       </div>
 
-      <div
-        style={{
-          width: 22,
-          height: 22,
-          borderRadius: '50%',
-          background: cfg.color,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: 11,
-          fontWeight: 800,
-          flexShrink: 0,
-        }}
-      >
-        {cfg.icon}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+        <div
+          style={{
+            width: 24,
+            height: 24,
+            borderRadius: '50%',
+            background: cfg.color,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontSize: 12,
+            fontWeight: 800,
+          }}
+        >
+          {cfg.icon}
+        </div>
+        <button
+          onClick={() => toast.dismiss(t.id)}
+          style={{
+            width: 22,
+            height: 22,
+            borderRadius: '50%',
+            background: '#f1f5f9',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 11,
+            color: '#64748b',
+            fontWeight: 700,
+            padding: 0,
+            lineHeight: 1,
+          }}
+        >
+          \u2715
+        </button>
       </div>
     </div>
   );
@@ -81,11 +101,11 @@ function BrandedToast({ t, type, message }: { t: Toast; type: NotifyType; messag
 
 export const notify = {
   success: (msg: string) =>
-    toast.custom((t) => <BrandedToast t={t} type="success" message={msg} />, { duration: 3500 }),
+    toast.custom((t) => <BrandedToast t={t} type="success" message={msg} />, { duration: 5000 }),
   error: (msg: string) =>
-    toast.custom((t) => <BrandedToast t={t} type="error" message={msg} />, { duration: 4000 }),
+    toast.custom((t) => <BrandedToast t={t} type="error" message={msg} />, { duration: 5000 }),
   warning: (msg: string) =>
-    toast.custom((t) => <BrandedToast t={t} type="warning" message={msg} />, { duration: 3500 }),
+    toast.custom((t) => <BrandedToast t={t} type="warning" message={msg} />, { duration: 5000 }),
   info: (msg: string) =>
-    toast.custom((t) => <BrandedToast t={t} type="info" message={msg} />, { duration: 3000 }),
+    toast.custom((t) => <BrandedToast t={t} type="info" message={msg} />, { duration: 5000 }),
 };
