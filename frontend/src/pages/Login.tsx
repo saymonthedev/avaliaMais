@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { useAuthStore } from '../store/authStore';
+import { notify } from '../services/notify';
 
 const features = [
   { icon: '📋', text: 'Gestão de pré-conselhos e conselhos de classe' },
@@ -13,20 +14,20 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    if (!email.trim()) { notify.error('Informe o e-mail para continuar.'); return; }
+    if (!senha.trim()) { notify.error('Informe a senha para continuar.'); return; }
     setLoading(true);
     try {
       const data = await authService.login(email, senha);
       setAuth(data);
       navigate('/dashboard');
     } catch {
-      setError('E-mail ou senha incorretos.');
+      notify.error('E-mail ou senha incorretos.');
     } finally {
       setLoading(false);
     }
@@ -69,7 +70,7 @@ export default function Login() {
           <div className="login-subtitle">Entre com suas credenciais para continuar</div>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
             <label className="form-label">E-mail institucional</label>
             <input
@@ -78,7 +79,6 @@ export default function Login() {
               placeholder="seu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
               autoFocus
             />
           </div>
@@ -90,15 +90,8 @@ export default function Login() {
               placeholder="••••••••"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
-              required
             />
           </div>
-
-          {error && (
-            <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: 'var(--danger)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', fontSize: 13, marginBottom: 16 }}>
-              {error}
-            </div>
-          )}
 
           <button className="btn btn-primary btn-lg w-full" type="submit" disabled={loading}>
             {loading ? 'Entrando...' : 'Entrar'}

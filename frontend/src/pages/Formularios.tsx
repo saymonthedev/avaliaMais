@@ -3,6 +3,7 @@ import { formularioService } from '../services/formularioService';
 import { eventoService } from '../services/eventoService';
 import { useAuthStore } from '../store/authStore';
 import type { Formulario, EventoConselho, TipoFormulario } from '../types';
+import { notify } from '../services/notify';
 
 const TIPOS: { value: TipoFormulario; label: string; roles: string[] }[] = [
   { value: 'PRE_CONSELHO_TURMA', label: 'Pré-conselho da Turma', roles: ['REPRESENTANTE'] },
@@ -34,7 +35,6 @@ export default function Formularios() {
   const [tipoSelecionado, setTipoSelecionado] = useState<TipoFormulario | ''>('');
   const [respostas, setRespostas] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
 
   const tiposPermitidos = TIPOS.filter((t) => !perfil || t.roles.includes(perfil));
   const campos = tipoSelecionado === 'PRE_CONSELHO_TURMA' ? CAMPOS_TURMA
@@ -56,18 +56,22 @@ export default function Formularios() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!eventoSelecionado || !tipoSelecionado) return;
-    setSaving(true); setError('');
+    if (!eventoSelecionado) { notify.error('Selecione um evento de conselho.'); return; }
+    if (!tipoSelecionado) { notify.error('Selecione o tipo de formulário.'); return; }
+    const campoVazio = campos.find((c) => !respostas[c.key]?.trim());
+    if (campoVazio) { notify.error(`Preencha o campo "${campoVazio.label}".`); return; }
+    setSaving(true);
     try {
       await formularioService.submeter(tipoSelecionado, Number(eventoSelecionado), JSON.stringify(respostas));
       setShowModal(false);
       setRespostas({});
       setEventoSelecionado('');
       setTipoSelecionado('');
+      notify.success('Formulário enviado com sucesso!');
       load();
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error;
-      setError(msg || 'Erro ao enviar formulário. Verifique se a etapa está aberta.');
+      notify.error(msg || 'Erro ao enviar formulário. Verifique se a etapa está aberta.');
     } finally { setSaving(false); }
   };
 
@@ -135,12 +139,12 @@ export default function Formularios() {
               <span className="modal-title">Novo Formulário</span>
               <button className="btn btn-ghost btn-sm" onClick={() => setShowModal(false)}>✕</button>
             </div>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} noValidate>
               <div className="modal-body">
                 <div className="grid-2">
                   <div className="form-group">
                     <label className="form-label">Evento de Conselho</label>
-                    <select className="form-control" required value={eventoSelecionado} onChange={(e) => setEventoSelecionado(e.target.value)}>
+                    <select className="form-control" value={eventoSelecionado} onChange={(e) => setEventoSelecionado(e.target.value)}>
                       <option value="">Selecione...</option>
                       {eventos.map((ev) => (
                         <option key={ev.id} value={ev.id}>
@@ -151,7 +155,7 @@ export default function Formularios() {
                   </div>
                   <div className="form-group">
                     <label className="form-label">Tipo de formulário</label>
-                    <select className="form-control" required value={tipoSelecionado} onChange={(e) => setTipoSelecionado(e.target.value as TipoFormulario)}>
+                    <select className="form-control" value={tipoSelecionado} onChange={(e) => setTipoSelecionado(e.target.value as TipoFormulario)}>
                       <option value="">Selecione...</option>
                       {tiposPermitidos.map((t) => (
                         <option key={t.value} value={t.value}>{t.label}</option>
@@ -166,7 +170,6 @@ export default function Formularios() {
                     <textarea
                       className="form-control"
                       rows={3}
-                      required
                       placeholder={`Descreva ${campo.label.toLowerCase()}...`}
                       value={respostas[campo.key] ?? ''}
                       onChange={(e) => setRespostas({ ...respostas, [campo.key]: e.target.value })}
@@ -180,11 +183,6 @@ export default function Formularios() {
                   </div>
                 )}
 
-                {error && (
-                  <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: 'var(--danger)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', fontSize: 13 }}>
-                    {error}
-                  </div>
-                )}
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>

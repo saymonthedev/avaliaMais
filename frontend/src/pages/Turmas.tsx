@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { turmaService } from '../services/turmaService';
+import { notify } from '../services/notify';
 import type { Turma } from '../types';
 
 export default function Turmas() {
@@ -17,12 +18,19 @@ export default function Turmas() {
   useEffect(() => { load(); }, []);
 
   const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault(); setSaving(true);
+    e.preventDefault();
+    if (!form.nome.trim()) { notify.error('Informe o nome da turma.'); return; }
+    if (!form.curso.trim()) { notify.error('Informe o curso.'); return; }
+    if (!form.ano) { notify.error('Informe o ano letivo.'); return; }
+    setSaving(true);
     try {
       await turmaService.criar({ ...form, ano: Number(form.ano) });
       setShowModal(false);
       setForm({ nome: '', ano: new Date().getFullYear().toString(), curso: '' });
+      notify.success('Turma criada com sucesso!');
       load();
+    } catch {
+      notify.error('Erro ao criar turma. Tente novamente.');
     } finally { setSaving(false); }
   };
 
@@ -63,20 +71,20 @@ export default function Turmas() {
               <span className="modal-title">Nova Turma</span>
               <button className="btn btn-ghost btn-sm" onClick={() => setShowModal(false)}>✕</button>
             </div>
-            <form onSubmit={handleSave}>
+            <form onSubmit={handleSave} noValidate>
               <div className="modal-body">
                 <div className="form-group">
                   <label className="form-label">Nome da turma</label>
-                  <input className="form-control" required placeholder="Ex: 3º Ano A" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+                  <input className="form-control" placeholder="Ex: 3º Ano A" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
                 </div>
                 <div className="grid-2">
                   <div className="form-group">
                     <label className="form-label">Curso</label>
-                    <input className="form-control" required placeholder="Ex: Técnico em Informática" value={form.curso} onChange={(e) => setForm({ ...form, curso: e.target.value })} />
+                    <input className="form-control" placeholder="Ex: Técnico em Informática" value={form.curso} onChange={(e) => setForm({ ...form, curso: e.target.value })} />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Ano letivo</label>
-                    <input className="form-control" type="number" required value={form.ano} onChange={(e) => setForm({ ...form, ano: e.target.value })} />
+                    <input className="form-control" type="number" value={form.ano} onChange={(e) => setForm({ ...form, ano: e.target.value })} />
                   </div>
                 </div>
               </div>

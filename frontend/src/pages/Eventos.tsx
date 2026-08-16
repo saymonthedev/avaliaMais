@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { eventoService } from '../services/eventoService';
 import { turmaService } from '../services/turmaService';
 import type { EventoConselho, Turma, StatusEtapa } from '../types';
+import { notify } from '../services/notify';
 
 const ETAPAS = [
   { key: 'pre-conselho-turma', label: 'Pré-conselho Turma' },
@@ -34,6 +35,8 @@ export default function Eventos() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.data) { notify.error('Informe a data do evento.'); return; }
+    if (!form.turmaId) { notify.error('Selecione uma turma.'); return; }
     setSaving(true);
     try {
       await eventoService.criar({
@@ -44,7 +47,10 @@ export default function Eventos() {
       });
       setShowModal(false);
       setForm({ data: '', turmaId: '', metaPreenchimento: '', disciplinas: '' });
+      notify.success('Evento criado com sucesso!');
       load();
+    } catch {
+      notify.error('Erro ao criar evento. Tente novamente.');
     } finally { setSaving(false); }
   };
 
@@ -143,16 +149,16 @@ export default function Eventos() {
               <span className="modal-title">Novo Evento de Conselho</span>
               <button className="btn btn-ghost btn-sm" onClick={() => setShowModal(false)}>✕</button>
             </div>
-            <form onSubmit={handleCreate}>
+            <form onSubmit={handleCreate} noValidate>
               <div className="modal-body">
                 <div className="grid-2">
                   <div className="form-group">
                     <label className="form-label">Data do conselho</label>
-                    <input className="form-control" type="date" required value={form.data} onChange={(e) => setForm({ ...form, data: e.target.value })} />
+                    <input className="form-control" type="date" value={form.data} onChange={(e) => setForm({ ...form, data: e.target.value })} />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Turma</label>
-                    <select className="form-control" required value={form.turmaId} onChange={(e) => setForm({ ...form, turmaId: e.target.value })}>
+                    <select className="form-control" value={form.turmaId} onChange={(e) => setForm({ ...form, turmaId: e.target.value })}>
                       <option value="">Selecione...</option>
                       {turmas.map((t) => <option key={t.id} value={t.id}>{t.nome}</option>)}
                     </select>

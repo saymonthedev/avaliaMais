@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { usuarioService } from '../services/usuarioService';
 import { turmaService } from '../services/turmaService';
 import type { Usuario, Turma, PerfilUsuario } from '../types';
+import { notify } from '../services/notify';
 
 const PERFIS: PerfilUsuario[] = ['ALUNO', 'REPRESENTANTE', 'PROFESSOR', 'PEDAGOGICO', 'SUPERVISAO', 'ADMINISTRADOR'];
 
@@ -17,7 +18,6 @@ export default function Usuarios() {
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ nome: '', email: '', senha: '', perfil: 'ALUNO' as PerfilUsuario, turmaId: '', isRepresentante: false });
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
 
   const load = () => {
     setLoading(true);
@@ -30,15 +30,19 @@ export default function Usuarios() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true); setError('');
+    if (!form.nome.trim()) { notify.error('Informe o nome completo.'); return; }
+    if (!form.email.trim()) { notify.error('Informe o e-mail.'); return; }
+    if (form.senha.length < 6) { notify.error('A senha deve ter pelo menos 6 caracteres.'); return; }
+    setSaving(true);
     try {
       await usuarioService.criar({ ...form, turmaId: form.turmaId ? Number(form.turmaId) : null });
       setShowModal(false);
       setForm({ nome: '', email: '', senha: '', perfil: 'ALUNO', turmaId: '', isRepresentante: false });
+      notify.success('Usuário criado com sucesso!');
       load();
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error;
-      setError(msg || 'Erro ao criar usuário');
+      notify.error(msg || 'Erro ao criar usuário.');
     } finally { setSaving(false); }
   };
 
@@ -80,22 +84,22 @@ export default function Usuarios() {
               <span className="modal-title">Novo Usuário</span>
               <button className="btn btn-ghost btn-sm" onClick={() => setShowModal(false)}>✕</button>
             </div>
-            <form onSubmit={handleSave}>
+            <form onSubmit={handleSave} noValidate>
               <div className="modal-body">
                 <div className="grid-2">
                   <div className="form-group">
                     <label className="form-label">Nome completo</label>
-                    <input className="form-control" required value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+                    <input className="form-control" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
                   </div>
                   <div className="form-group">
                     <label className="form-label">E-mail</label>
-                    <input className="form-control" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                    <input className="form-control" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                   </div>
                 </div>
                 <div className="grid-2">
                   <div className="form-group">
                     <label className="form-label">Senha</label>
-                    <input className="form-control" type="password" required minLength={6} value={form.senha} onChange={(e) => setForm({ ...form, senha: e.target.value })} />
+                    <input className="form-control" type="password" value={form.senha} onChange={(e) => setForm({ ...form, senha: e.target.value })} />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Perfil</label>
@@ -117,7 +121,6 @@ export default function Usuarios() {
                     <label htmlFor="rep" className="form-label" style={{ margin: 0, cursor: 'pointer' }}>É representante de turma</label>
                   </div>
                 </div>
-                {error && <div className="form-error">{error}</div>}
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>

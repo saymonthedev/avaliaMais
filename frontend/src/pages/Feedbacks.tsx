@@ -4,6 +4,7 @@ import { usuarioService } from '../services/usuarioService';
 import { eventoService } from '../services/eventoService';
 import { useAuthStore } from '../store/authStore';
 import type { Feedback, Usuario, EventoConselho } from '../types';
+import { notify } from '../services/notify';
 
 export default function Feedbacks() {
   const { perfil } = useAuthStore();
@@ -31,12 +32,19 @@ export default function Feedbacks() {
   useEffect(() => { load(); }, []);
 
   const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault(); setSaving(true);
+    e.preventDefault();
+    if (!form.alunoId) { notify.error('Selecione um aluno.'); return; }
+    if (!form.eventoId) { notify.error('Selecione um evento de conselho.'); return; }
+    if (!form.feedbackFinal.trim()) { notify.error('Preencha o feedback final.'); return; }
+    setSaving(true);
     try {
       await feedbackService.consolidar({ ...form, alunoId: Number(form.alunoId), eventoId: Number(form.eventoId) });
       setShowModal(false);
       setForm({ alunoId: '', eventoId: '', feedbackFinal: '', pontosFortes: '', oportunidadesMelhoria: '' });
+      notify.success('Feedback consolidado com sucesso!');
       load();
+    } catch {
+      notify.error('Erro ao consolidar feedback. Tente novamente.');
     } finally { setSaving(false); }
   };
 
@@ -86,19 +94,19 @@ export default function Feedbacks() {
               <span className="modal-title">Consolidar Feedback</span>
               <button className="btn btn-ghost btn-sm" onClick={() => setShowModal(false)}>✕</button>
             </div>
-            <form onSubmit={handleSave}>
+            <form onSubmit={handleSave} noValidate>
               <div className="modal-body">
                 <div className="grid-2">
                   <div className="form-group">
                     <label className="form-label">Aluno</label>
-                    <select className="form-control" required value={form.alunoId} onChange={(e) => setForm({ ...form, alunoId: e.target.value })}>
+                    <select className="form-control" value={form.alunoId} onChange={(e) => setForm({ ...form, alunoId: e.target.value })}>
                       <option value="">Selecione...</option>
                       {usuarios.map((u) => <option key={u.id} value={u.id}>{u.nome}</option>)}
                     </select>
                   </div>
                   <div className="form-group">
                     <label className="form-label">Evento de Conselho</label>
-                    <select className="form-control" required value={form.eventoId} onChange={(e) => setForm({ ...form, eventoId: e.target.value })}>
+                    <select className="form-control" value={form.eventoId} onChange={(e) => setForm({ ...form, eventoId: e.target.value })}>
                       <option value="">Selecione...</option>
                       {eventos.map((ev) => <option key={ev.id} value={ev.id}>{ev.turmaNome} — {new Date(ev.data).toLocaleDateString('pt-BR')}</option>)}
                     </select>
@@ -106,7 +114,7 @@ export default function Feedbacks() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Feedback Final</label>
-                  <textarea className="form-control" rows={3} required value={form.feedbackFinal} onChange={(e) => setForm({ ...form, feedbackFinal: e.target.value })} />
+                  <textarea className="form-control" rows={3} value={form.feedbackFinal} onChange={(e) => setForm({ ...form, feedbackFinal: e.target.value })} />
                 </div>
                 <div className="grid-2">
                   <div className="form-group">
