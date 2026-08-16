@@ -1,22 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { useAuthStore } from '../store/authStore';
 import { notify } from '../services/notify';
+import api from '../services/api';
 
-const stats = [
-  { value: '1.240+', label: 'Conselhos realizados' },
-  { value: '380+',   label: 'Professores ativos' },
-  { value: '8.900+', label: 'Feedbacks gerados' },
-];
+interface StatsData { totalUsuarios: number; totalTurmas: number; totalEventos: number; totalFormularios: number; }
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSenha, setShowSenha] = useState(false);
+  const [statsData, setStatsData] = useState<StatsData | null>(null);
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
+
+  useEffect(() => {
+    api.get<StatsData>('/stats').then((r) => setStatsData(r.data)).catch(() => {});
+  }, []);
+
+  const stats = [
+    { value: statsData ? String(statsData.totalUsuarios) : '...', label: 'Usuários cadastrados' },
+    { value: statsData ? String(statsData.totalTurmas)   : '...', label: 'Turmas ativas' },
+    { value: statsData ? String(statsData.totalEventos)  : '...', label: 'Eventos de conselho' },
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
