@@ -56,45 +56,28 @@ function BrandedToast({ t, type, message }: { t: Toast; type: NotifyType; messag
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-        <div
-          style={{
-            width: 24,
-            height: 24,
-            borderRadius: '50%',
-            background: cfg.color,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontSize: 12,
-            fontWeight: 800,
-          }}
-        >
-          {cfg.icon}
-        </div>
-        <button
-          onClick={() => toast.dismiss(t.id)}
-          style={{
-            width: 22,
-            height: 22,
-            borderRadius: '50%',
-            background: '#f1f5f9',
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 11,
-            color: '#64748b',
-            fontWeight: 700,
-            padding: 0,
-            lineHeight: 1,
-          }}
-        >
-          \u2715
-        </button>
-      </div>
+      <button
+        onClick={() => toast.dismiss(t.id)}
+        style={{
+          width: 24,
+          height: 24,
+          borderRadius: '50%',
+          background: '#f1f5f9',
+          border: 'none',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 13,
+          color: '#64748b',
+          fontWeight: 700,
+          padding: 0,
+          flexShrink: 0,
+          lineHeight: 1,
+        }}
+      >
+        ✕
+      </button>
     </div>
   );
 }
