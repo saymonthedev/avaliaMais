@@ -76,6 +76,7 @@ export default function Login() {
             <input
               className="form-control"
               type="email"
+              autoComplete="off"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoFocus
@@ -86,6 +87,7 @@ export default function Login() {
             <input
               className="form-control"
               type="password"
+              autoComplete="new-password"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
             />
