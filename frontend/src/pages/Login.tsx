@@ -5,7 +5,7 @@ import { useAuthStore } from '../store/authStore';
 import { notify } from '../services/notify';
 import api from '../services/api';
 
-interface StatsData { totalUsuarios: number; totalTurmas: number; totalEventos: number; totalFormularios: number; }
+interface StatsData { totalUsuarios: number; totalAlunos: number; totalEventos: number; totalFormularios: number; }
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -22,7 +22,7 @@ export default function Login() {
 
   const stats = [
     { value: statsData ? String(statsData.totalUsuarios) : '...', label: 'Usuários cadastrados' },
-    { value: statsData ? String(statsData.totalTurmas)   : '...', label: 'Turmas ativas' },
+    { value: statsData ? String(statsData.totalAlunos)   : '...', label: 'Alunos atendidos' },
     { value: statsData ? String(statsData.totalEventos)  : '...', label: 'Eventos de conselho' },
   ];
 

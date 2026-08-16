@@ -15,4 +15,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     List<Usuario> findByTurmaId(Long turmaId);
     List<Usuario> findByPerfil(PerfilUsuario perfil);
     List<Usuario> findByTurmaIdAndIsRepresentanteTrue(Long turmaId);
+    long countByPerfil(PerfilUsuario perfil);
 }

@@ -1,22 +1,24 @@
 import { NavLink, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, CalendarDays, MessageSquare, ClipboardList, MessageCircle, BookOpen, Users } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useAuthStore } from '../store/authStore';
 import type { PerfilUsuario } from '../types';
 
 interface NavItem {
   to: string;
-  icon: string;
+  icon: ReactNode;
   label: string;
   roles?: PerfilUsuario[];
 }
 
 const NAV: NavItem[] = [
-  { to: '/dashboard', icon: '🏠', label: 'Dashboard' },
-  { to: '/eventos', icon: '📅', label: 'Eventos', roles: ['PEDAGOGICO', 'SUPERVISAO', 'PROFESSOR', 'REPRESENTANTE', 'ALUNO', 'ADMINISTRADOR'] },
-  { to: '/feedbacks', icon: '💬', label: 'Feedbacks' },
-  { to: '/formularios', icon: '📋', label: 'Formulários', roles: ['REPRESENTANTE', 'PROFESSOR', 'PEDAGOGICO'] },
-  { to: '/chat', icon: '💭', label: 'Chat' },
-  { to: '/turmas', icon: '🏫', label: 'Turmas', roles: ['PEDAGOGICO', 'ADMINISTRADOR', 'SUPERVISAO'] },
-  { to: '/usuarios', icon: '👥', label: 'Usuários', roles: ['PEDAGOGICO', 'ADMINISTRADOR'] },
+  { to: '/dashboard', icon: <LayoutDashboard size={16} />, label: 'Dashboard' },
+  { to: '/eventos', icon: <CalendarDays size={16} />, label: 'Eventos', roles: ['PEDAGOGICO', 'SUPERVISAO', 'PROFESSOR', 'REPRESENTANTE', 'ALUNO', 'ADMINISTRADOR'] },
+  { to: '/feedbacks', icon: <MessageSquare size={16} />, label: 'Feedbacks' },
+  { to: '/formularios', icon: <ClipboardList size={16} />, label: 'Formulários', roles: ['REPRESENTANTE', 'PROFESSOR', 'PEDAGOGICO'] },
+  { to: '/chat', icon: <MessageCircle size={16} />, label: 'Chat' },
+  { to: '/turmas', icon: <BookOpen size={16} />, label: 'Turmas', roles: ['PEDAGOGICO', 'ADMINISTRADOR', 'SUPERVISAO'] },
+  { to: '/usuarios', icon: <Users size={16} />, label: 'Usuários', roles: ['PEDAGOGICO', 'ADMINISTRADOR'] },
 ];
 
 const perfilLabel: Record<PerfilUsuario, string> = {
@@ -51,7 +53,7 @@ export default function Sidebar() {
             to={item.to}
             className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
           >
-            <span style={{ fontSize: 16 }}>{item.icon}</span>
+            <span style={{ display: 'flex', alignItems: 'center' }}>{item.icon}</span>
             {item.label}
           </NavLink>
         ))}

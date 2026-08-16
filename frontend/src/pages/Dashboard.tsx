@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { CalendarDays, Users, BookOpen, Clock, ClipboardList } from 'lucide-react';
 import { eventoService } from '../services/eventoService';
 import { usuarioService } from '../services/usuarioService';
 import { turmaService } from '../services/turmaService';
@@ -39,8 +40,26 @@ export default function Dashboard() {
   ).length;
 
   if (loading) return (
-    <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 400 }}>
-      <div style={{ color: 'var(--text-muted)', fontSize: 14 }}>Carregando dashboard...</div>
+    <div className="page">
+      <div className="stats-grid">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="stat-card">
+            <span className="skeleton" style={{ width: 46, height: 46, borderRadius: 8, flexShrink: 0 }} />
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <span className="skeleton" style={{ height: 24, width: 52 }} />
+              <span className="skeleton" style={{ height: 12, width: 120 }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="card">
+        <div className="card-header">
+          <span className="skeleton" style={{ height: 18, width: 240, display: 'inline-block' }} />
+        </div>
+        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {[0, 1, 2].map((i) => <span key={i} className="skeleton" style={{ height: 44 }} />)}
+        </div>
+      </div>
     </div>
   );
 
@@ -48,7 +67,7 @@ export default function Dashboard() {
     <div className="page">
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-icon blue">📅</div>
+          <div className="stat-icon blue"><CalendarDays size={20} /></div>
           <div>
             <div className="stat-value">{eventos.length}</div>
             <div className="stat-label">Eventos de conselho</div>
@@ -57,23 +76,23 @@ export default function Dashboard() {
         {(perfil === 'PEDAGOGICO' || perfil === 'ADMINISTRADOR') && (
           <>
             <div className="stat-card">
-              <div className="stat-icon green">👥</div>
+              <div className="stat-icon green"><Users size={20} /></div>
               <div>
                 <div className="stat-value">{totalUsuarios}</div>
                 <div className="stat-label">Usuários cadastrados</div>
               </div>
             </div>
             <div className="stat-card">
-              <div className="stat-icon purple">🏫</div>
+              <div className="stat-icon purple"><BookOpen size={20} /></div>
               <div>
                 <div className="stat-value">{totalTurmas}</div>
-                <div className="stat-label">Turmas ativas</div>
+                <div className="stat-label">Turmas cadastradas</div>
               </div>
             </div>
           </>
         )}
         <div className="stat-card">
-          <div className="stat-icon orange">⏳</div>
+          <div className="stat-icon orange"><Clock size={20} /></div>
           <div>
             <div className="stat-value">{eventosPendentes}</div>
             <div className="stat-label">Eventos em andamento</div>
@@ -87,7 +106,7 @@ export default function Dashboard() {
         </div>
         {eventos.length === 0 ? (
           <div className="empty-state">
-            <span style={{ fontSize: 40 }}>📋</span>
+            <ClipboardList size={40} strokeWidth={1.2} style={{ color: 'var(--text-muted)', opacity: 0.5 }} />
             <p>Nenhum evento de conselho encontrado.</p>
           </div>
         ) : (

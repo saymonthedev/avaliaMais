@@ -1,5 +1,6 @@
 import toast from 'react-hot-toast';
 import type { Toast } from 'react-hot-toast';
+import { X } from 'lucide-react';
 
 type NotifyType = 'success' | 'error' | 'warning' | 'info';
 
@@ -76,7 +77,7 @@ function BrandedToast({ t, type, message }: { t: Toast; type: NotifyType; messag
           lineHeight: 1,
         }}
       >
-        ✕
+        <X size={13} />
       </button>
     </div>
   );

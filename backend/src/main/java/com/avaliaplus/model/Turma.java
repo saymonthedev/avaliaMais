@@ -25,6 +25,7 @@ public class Turma {
     @Column(nullable = false)
     private String curso;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToMany(mappedBy = "turma", fetch = FetchType.LAZY)
     private List<Usuario> alunos;
 

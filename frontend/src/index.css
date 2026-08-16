@@ -24,7 +24,7 @@
   --radius-lg: 14px;
   --sidebar-width: 260px;
   --header-height: 64px;
-  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --font: 'Poppins', system-ui, -apple-system, sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -218,6 +218,41 @@ tbody tr:hover td { background: var(--surface-2); }
 .dot-red { background: var(--danger); } .dot-gray { background: var(--text-muted); }
 
 /* ── Toast animations ── */
+/* ── Skeleton loader ── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.skeleton {
+  display: block;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 6px;
+}
+
+/* ── Etapa cards (Eventos) ── */
+.etapa-card { background: var(--surface-2); border-radius: var(--radius-sm); padding: 12px 14px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+.etapa-card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--text-muted); line-height: 1.2; }
+
+/* ── Status picker ── */
+.status-picker { display: flex; flex-direction: column; gap: 4px; }
+.status-btn { font-size: 12px; font-weight: 500; padding: 6px 10px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: var(--surface); color: var(--text-secondary); cursor: pointer; transition: all .12s ease; font-family: var(--font); text-align: left; line-height: 1.3; }
+.status-btn:hover:not(.active) { border-color: #93c5fd; color: var(--primary); background: var(--primary-light); }
+.status-btn-pendente.active     { background: #f8fafc; border-color: #94a3b8; color: #475569; font-weight: 600; }
+.status-btn-em-andamento.active { background: #fefce8; border-color: #ca8a04; color: #854d0e; font-weight: 600; }
+.status-btn-concluido.active    { background: #f0fdf4; border-color: #16a34a; color: #166534; font-weight: 600; }
+.status-btn-cancelado.active    { background: #fef2f2; border-color: #dc2626; color: #991b1b; font-weight: 600; }
+
+/* ── DatePicker ── */
+.date-picker { position: relative; display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); cursor: pointer; transition: border-color .15s, box-shadow .15s; font-family: var(--font); user-select: none; }
+.date-picker:hover { border-color: #93c5fd; }
+.date-picker:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.10); }
+.date-picker-icon { color: var(--text-muted); flex-shrink: 0; }
+.date-picker-text { font-size: 14px; color: var(--text-primary); flex: 1; line-height: 1; }
+.date-picker-empty .date-picker-text { color: var(--text-muted); }
+.date-picker-native { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: none; padding: 0; }
+
 @keyframes toastIn {
   from { opacity: 0; transform: translateX(80px) scale(0.88); }
   to   { opacity: 1; transform: translateX(0)    scale(1); }

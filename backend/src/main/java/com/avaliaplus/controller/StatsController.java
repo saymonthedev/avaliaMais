@@ -1,8 +1,8 @@
 package com.avaliaplus.controller;
 
+import com.avaliaplus.model.enums.PerfilUsuario;
 import com.avaliaplus.repository.EventoConselhoRepository;
 import com.avaliaplus.repository.FormularioRepository;
-import com.avaliaplus.repository.TurmaRepository;
 import com.avaliaplus.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class StatsController {
 
     private final UsuarioRepository usuarioRepository;
-    private final TurmaRepository turmaRepository;
     private final EventoConselhoRepository eventoConselhoRepository;
     private final FormularioRepository formularioRepository;
 
@@ -23,7 +22,7 @@ public class StatsController {
     public StatsResponse getStats() {
         return new StatsResponse(
             usuarioRepository.count(),
-            turmaRepository.count(),
+            usuarioRepository.countByPerfil(PerfilUsuario.ALUNO),
             eventoConselhoRepository.count(),
             formularioRepository.count()
         );
@@ -31,7 +30,7 @@ public class StatsController {
 
     public record StatsResponse(
         long totalUsuarios,
-        long totalTurmas,
+        long totalAlunos,
         long totalEventos,
         long totalFormularios
     ) {}

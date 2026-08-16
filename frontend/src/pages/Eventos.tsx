@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { CalendarDays, X } from 'lucide-react';
 import { eventoService } from '../services/eventoService';
 import { turmaService } from '../services/turmaService';
 import type { EventoConselho, Turma, StatusEtapa } from '../types';
 import { notify } from '../services/notify';
+import { DatePicker } from '../components/DatePicker';
 
 const ETAPAS = [
   { key: 'pre-conselho-turma', label: 'Pré-conselho Turma' },
@@ -11,9 +13,37 @@ const ETAPAS = [
   { key: 'liberar-feedback', label: 'Liberar Feedback' },
 ];
 
-function StatusDot({ status }: { status: StatusEtapa }) {
-  const cls = { PENDENTE: 'dot-gray', EM_ANDAMENTO: 'dot-yellow', CONCLUIDO: 'dot-green', CANCELADO: 'dot-red' }[status];
-  return <span className={`dot ${cls}`} style={{ display: 'inline-block', marginRight: 6 }} />;
+const STATUS_OPTIONS = [
+  { value: 'PENDENTE',     label: 'Pendente' },
+  { value: 'EM_ANDAMENTO', label: 'Em andamento' },
+  { value: 'CONCLUIDO',    label: 'Concluído' },
+  { value: 'CANCELADO',    label: 'Cancelado' },
+];
+
+const LIBERAR_OPTIONS = [
+  { value: 'PENDENTE',  label: 'Bloquear' },
+  { value: 'CONCLUIDO', label: 'Liberar' },
+];
+
+function StatusPicker({ value, onChange, options }: {
+  value: string;
+  onChange: (v: StatusEtapa) => void;
+  options: { value: string; label: string }[];
+}) {
+  return (
+    <div className="status-picker">
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          className={`status-btn status-btn-${opt.value.toLowerCase().replace('_', '-')}${value === opt.value ? ' active' : ''}`}
+          onClick={() => onChange(opt.value as StatusEtapa)}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
 }
 
 export default function Eventos() {
@@ -70,26 +100,32 @@ export default function Eventos() {
           <div className="empty-state"><p>Carregando...</p></div>
         ) : eventos.length === 0 ? (
           <div className="empty-state">
-            <span style={{ fontSize: 40 }}>📅</span>
+            <CalendarDays size={40} strokeWidth={1.2} style={{ color: 'var(--text-muted)', opacity: 0.5 }} />
             <p>Nenhum evento cadastrado ainda.</p>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
             {eventos.map((ev) => (
-              <div key={ev.id} style={{ padding: '18px 22px', borderBottom: '1px solid var(--border)' }}>
-                <div className="flex items-center justify-between mb-4">
+              <div key={ev.id} style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 16 }}>
                   <div>
-                    <strong style={{ fontSize: 15 }}>{ev.turmaNome}</strong>
-                    <span className="text-muted text-sm" style={{ marginLeft: 12 }}>
-                      {new Date(ev.data).toLocaleDateString('pt-BR')}
-                    </span>
+                    <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)', marginBottom: 4 }}>{ev.turmaNome}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: 13, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <CalendarDays size={13} />
+                        {new Date(ev.data + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                      </span>
+                      {ev.metaPreenchimento != null && (
+                        <span className="badge badge-blue">Meta: {ev.metaPreenchimento}%</span>
+                      )}
+                    </div>
                   </div>
-                  <span className={`badge ${ev.feedbackLiberado ? 'badge-green' : 'badge-gray'}`}>
-                    {ev.feedbackLiberado ? 'Feedback liberado' : 'Feedback não liberado'}
+                  <span className={`badge ${ev.feedbackLiberado ? 'badge-green' : 'badge-gray'}`} style={{ flexShrink: 0 }}>
+                    {ev.feedbackLiberado ? 'Feedback liberado' : 'Feedback pendente'}
                   </span>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 10 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
                   {ETAPAS.map((et) => {
                     const statusKey = {
                       'pre-conselho-turma': ev.statusPreConselhoTurma,
@@ -97,33 +133,14 @@ export default function Eventos() {
                       'feedback-final': ev.statusFeedbackFinal,
                       'liberar-feedback': ev.feedbackLiberado ? 'CONCLUIDO' : 'PENDENTE',
                     }[et.key] as StatusEtapa;
-
                     return (
-                      <div key={et.key} style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: '10px 12px', border: '1px solid var(--border)' }}>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6 }}>{et.label}</div>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                          <div style={{ fontSize: 13, display: 'flex', alignItems: 'center' }}>
-                            <StatusDot status={statusKey} />
-                            {statusKey}
-                          </div>
-                          <select
-                            style={{ fontSize: 11, padding: '2px 6px', border: '1px solid var(--border)', borderRadius: 4, background: 'white', cursor: 'pointer' }}
-                            value=""
-                            onChange={(e) => { if (e.target.value) handleEtapa(ev.id, et.key, e.target.value as StatusEtapa); }}
-                          >
-                            <option value="">Alterar</option>
-                            {et.key === 'liberar-feedback' ? (
-                              <>
-                                <option value="CONCLUIDO">Liberar</option>
-                                <option value="PENDENTE">Bloquear</option>
-                              </>
-                            ) : (
-                              ['PENDENTE', 'EM_ANDAMENTO', 'CONCLUIDO', 'CANCELADO'].map((s) => (
-                                <option key={s} value={s}>{s}</option>
-                              ))
-                            )}
-                          </select>
-                        </div>
+                      <div key={et.key} className="etapa-card">
+                        <div className="etapa-card-label">{et.label}</div>
+                        <StatusPicker
+                          value={statusKey}
+                          onChange={(v) => handleEtapa(ev.id, et.key, v)}
+                          options={et.key === 'liberar-feedback' ? LIBERAR_OPTIONS : STATUS_OPTIONS}
+                        />
                       </div>
                     );
                   })}
@@ -147,14 +164,14 @@ export default function Eventos() {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <span className="modal-title">Novo Evento de Conselho</span>
-              <button className="btn btn-ghost btn-sm" onClick={() => setShowModal(false)}>✕</button>
+              <button className="btn btn-ghost btn-sm" onClick={() => setShowModal(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={15} /></button>
             </div>
             <form onSubmit={handleCreate} noValidate>
               <div className="modal-body">
                 <div className="grid-2">
                   <div className="form-group">
                     <label className="form-label">Data do conselho</label>
-                    <input className="form-control" type="date" value={form.data} onChange={(e) => setForm({ ...form, data: e.target.value })} />
+                    <DatePicker value={form.data} onChange={(v) => setForm({ ...form, data: v })} />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Turma</label>

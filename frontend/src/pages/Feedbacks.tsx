@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FileText, X } from 'lucide-react';
 import { feedbackService } from '../services/feedbackService';
 import { usuarioService } from '../services/usuarioService';
 import { eventoService } from '../services/eventoService';
@@ -61,7 +62,7 @@ export default function Feedbacks() {
           <div className="empty-state"><p>Carregando...</p></div>
         ) : feedbacks.length === 0 ? (
           <div className="empty-state">
-            <span style={{ fontSize: 40 }}>📝</span>
+            <FileText size={40} strokeWidth={1.2} style={{ color: 'var(--text-muted)', opacity: 0.5 }} />
             <p>Nenhum feedback consolidado encontrado.</p>
           </div>
         ) : (
@@ -92,7 +93,7 @@ export default function Feedbacks() {
           <div className="modal" style={{ maxWidth: 620 }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <span className="modal-title">Consolidar Feedback</span>
-              <button className="btn btn-ghost btn-sm" onClick={() => setShowModal(false)}>✕</button>
+              <button className="btn btn-ghost btn-sm" onClick={() => setShowModal(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={15} /></button>
             </div>
             <form onSubmit={handleSave} noValidate>
               <div className="modal-body">

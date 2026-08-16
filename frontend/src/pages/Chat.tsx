@@ -5,6 +5,7 @@ import { useAuthStore } from '../store/authStore';
 import type { MensagemChat, Usuario } from '../types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { MessageCircle, Check, CheckCheck } from 'lucide-react';
 
 function initials(nome: string) {
   return nome.split(' ').slice(0, 2).map((n) => n[0]).join('').toUpperCase();
@@ -86,7 +87,7 @@ export default function Chat() {
       <div className="chat-window">
         {!selecionado ? (
           <div className="empty-state" style={{ flex: 1 }}>
-            <span style={{ fontSize: 48 }}>💬</span>
+            <MessageCircle size={48} strokeWidth={1.2} style={{ color: 'var(--text-muted)', opacity: 0.4 }} />
             <p>Selecione um contato para iniciar uma conversa</p>
           </div>
         ) : (
@@ -103,7 +104,7 @@ export default function Chat() {
               {loading ? (
                 <div className="empty-state"><p>Carregando mensagens...</p></div>
               ) : mensagens.length === 0 ? (
-                <div className="empty-state"><p>Nenhuma mensagem ainda. Diga olá! 👋</p></div>
+                <div className="empty-state"><p>Nenhuma mensagem ainda. Diga olá!</p></div>
               ) : mensagens.map((m) => {
                 const isMine = m.remetenteId !== selecionado.id;
                 return (
@@ -111,7 +112,7 @@ export default function Chat() {
                     <div className={`msg-bubble ${isMine ? 'msg-mine' : 'msg-other'}`}>{m.mensagem}</div>
                     <div className="msg-time">
                       {format(new Date(m.dataEnvio), "dd/MM HH:mm", { locale: ptBR })}
-                      {isMine && <span style={{ marginLeft: 6 }}>{m.lido ? '✓✓' : '✓'}</span>}
+                      {isMine && <span style={{ marginLeft: 6, display: 'inline-flex', alignItems: 'center', color: m.lido ? '#2563eb' : 'inherit' }}>{m.lido ? <CheckCheck size={12} /> : <Check size={12} />}</span>}
                     </div>
                   </div>
                 );

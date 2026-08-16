@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ClipboardList, X } from 'lucide-react';
 import { formularioService } from '../services/formularioService';
 import { eventoService } from '../services/eventoService';
 import { useAuthStore } from '../store/authStore';
@@ -106,7 +107,7 @@ export default function Formularios() {
           <div className="empty-state"><p>Carregando...</p></div>
         ) : formularios.length === 0 ? (
           <div className="empty-state">
-            <span style={{ fontSize: 40 }}>📋</span>
+            <ClipboardList size={40} strokeWidth={1.2} style={{ color: 'var(--text-muted)', opacity: 0.5 }} />
             <p>Nenhum formulário encontrado para os eventos disponíveis.</p>
           </div>
         ) : (
@@ -137,7 +138,7 @@ export default function Formularios() {
           <div className="modal" style={{ maxWidth: 640 }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <span className="modal-title">Novo Formulário</span>
-              <button className="btn btn-ghost btn-sm" onClick={() => setShowModal(false)}>✕</button>
+              <button className="btn btn-ghost btn-sm" onClick={() => setShowModal(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={15} /></button>
             </div>
             <form onSubmit={handleSubmit} noValidate>
               <div className="modal-body">
